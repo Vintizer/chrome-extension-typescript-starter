@@ -1,7 +1,14 @@
+const ZipPlugin = require('zip-webpack-plugin');
 const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const srcDir = path.join(__dirname, "..", "src");
+
+const fs = require('fs');
+const filePath = path.join(__dirname, '../public/manifest.json');
+
+const data = fs.readFileSync(filePath);
+const version = JSON.parse(data)?.version;
 
 module.exports = {
     entry: {
@@ -39,5 +46,10 @@ module.exports = {
             patterns: [{ from: ".", to: "../", context: "public" }],
             options: {},
         }),
+        new ZipPlugin({
+            filename: version + '.zip',
+            pathPrefix: './dist',
+            path: '../',
+        })
     ],
 };
